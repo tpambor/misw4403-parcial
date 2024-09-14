@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "e5399034-d618-45ec-bec2-87ce56bfb62b",
+		"name": "Supermercados",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26749673"
+	},
+	"item": [
+		{
+			"name": "Crear un supermercado válido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"supermercado1_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length < 11);",
+							"pm.collectionVariables.set('supermercado1_nombre', nombre);",
+							"",
+							"pm.collectionVariables.set('supermercado1_longitud', pm.variables.replaceIn('{{$randomLongitude}}'));",
+							"pm.collectionVariables.set('supermercado1_latitud', pm.variables.replaceIn('{{$randomLatitude}}'));",
+							"pm.collectionVariables.set('supermercado1_pagina', pm.variables.replaceIn('{{$randomUrl}}'));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado1_nombre}}\",\n    \"longitud\": {{supermercado1_longitud}},\n    \"latitud\": {{supermercado1_latitud}},\n    \"paginaWeb\": \"{{supermercado1_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear un supermercado inválido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 412\", function () {",
+							"    pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El nombre del supermercado debe tener al menos 11 caracteres.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length > 10);",
+							"pm.collectionVariables.set('supermercado1_nombre_invalido', nombre);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado1_nombre_invalido}}\",\n    \"longitud\": {{supermercado1_longitud}},\n    \"latitud\": {{supermercado1_latitud}},\n    \"paginaWeb\": \"{{supermercado1_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todos los supermercados",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Number of supermarkets > 0', function () {",
+							"   pm.expect(data.length).to.greaterThan(0)",
+							"});",
+							"",
+							"pm.test(\"Check that it contains the created supermarket\", function () {",
+							"    var found = false; ",
+							"",
+							"    for (var i = 0; i < data.length; i++) {",
+							"        if (data[i].id === pm.collectionVariables.get(\"supermercado1_id\")) {",
+							"            found = true;",
+							"            break;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(found).to.be.true;",
+							"    pm.expect(data[i].nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"    pm.expect(data[i].longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"    pm.expect(data[i].latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"    pm.expect(data[i].paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un supermercado por ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/{{supermercado1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermercado1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un supermercado por un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar un supermercado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check that ID matches\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.expect(data.id).to.eql(pm.collectionVariables.get(\"supermercado1_id\"));",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length < 11);",
+							"pm.collectionVariables.set('supermercado1_nombre', nombre);",
+							"",
+							"pm.collectionVariables.set('supermercado1_longitud', pm.variables.replaceIn('{{$randomLongitude}}'));",
+							"pm.collectionVariables.set('supermercado1_latitud', pm.variables.replaceIn('{{$randomLatitude}}'));",
+							"pm.collectionVariables.set('supermercado1_pagina', pm.variables.replaceIn('{{$randomUrl}}'));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado1_nombre}}\",\n    \"longitud\": {{supermercado1_longitud}},\n    \"latitud\": {{supermercado1_latitud}},\n    \"paginaWeb\": \"{{supermercado1_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/{{supermercado1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermercado1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar un supermercado con un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado1_nombre}}\",\n    \"longitud\": {{supermercado1_longitud}},\n    \"latitud\": {{supermercado1_latitud}},\n    \"paginaWeb\": \"{{supermercado1_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un supermercado por su ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"   pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/{{supermercado1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermercado1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un supermercado con un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/supermarkets/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
