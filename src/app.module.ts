@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { CiudadModule } from './ciudad/ciudad.module';
 
 function databaseConfigFromEnv(): TypeOrmModuleOptions {
   const url = new URL(process.env.DATABASE_URL);
@@ -33,6 +34,7 @@ function databaseConfigFromEnv(): TypeOrmModuleOptions {
       synchronize: true,
       keepConnectionAlive: true,
     }),
+    CiudadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
