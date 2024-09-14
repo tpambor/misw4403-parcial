@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CiudadModule } from './ciudad/ciudad.module';
+import { CiudadEntity } from './ciudad/ciudad.entity';
 import { SupermercadoModule } from './supermercado/supermercado.module';
 
 function databaseConfigFromEnv(): TypeOrmModuleOptions {
@@ -30,7 +31,7 @@ function databaseConfigFromEnv(): TypeOrmModuleOptions {
   imports: [
     TypeOrmModule.forRoot({
       ...databaseConfigFromEnv(),
-      entities: [],
+      entities: [CiudadEntity],
       dropSchema: true,
       synchronize: true,
       keepConnectionAlive: true,
