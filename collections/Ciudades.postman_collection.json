@@ -1,0 +1,494 @@
+{
+	"info": {
+		"_postman_id": "27d901b7-5803-41e0-8316-f20f46183175",
+		"name": "Ciudades",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26749673"
+	},
+	"item": [
+		{
+			"name": "Crear una ciudad válida",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"ciudad1_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const paises = ['Argentina', 'Ecuador', 'Paraguay'];",
+							"const paisIndex = Math.floor(Math.random() * paises.length);",
+							"pm.collectionVariables.set(\"ciudad1_pais\", paises[paisIndex]);",
+							"pm.collectionVariables.set('ciudad1_nombre', pm.variables.replaceIn('{{$randomCity}}'));",
+							"pm.collectionVariables.set('ciudad1_habitantes', Math.floor(Math.random() * 1000000) + 1);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{ciudad1_nombre}}\",\n    \"pais\": \"{{ciudad1_pais}}\",\n    \"habitantes\": {{ciudad1_habitantes}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear una ciudad inválida",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 412\", function () {",
+							"    pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El país de la ciudad no es válido.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{ciudad1_nombre}}\",\n    \"pais\": \"Colombia\",\n    \"habitantes\": {{ciudad1_habitantes}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las ciudades",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Number of cities > 0', function () {",
+							"   pm.expect(data.length).to.greaterThan(0)",
+							"});",
+							"",
+							"pm.test(\"Check that it contains the created city\", function () {",
+							"    var found = false; ",
+							"",
+							"    for (var i = 0; i < data.length; i++) {",
+							"        if (data[i].id === pm.collectionVariables.get(\"ciudad1_id\")) {",
+							"            found = true;",
+							"            break;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(found).to.be.true;",
+							"    pm.expect(data[i].nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"    pm.expect(data[i].pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"    pm.expect(data[i].habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener una ciudad por ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check that ID matches\", function () {",
+							"    pm.expect(data.id).to.eql(pm.collectionVariables.get(\"ciudad1_id\"));",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener una ciudad por un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"La ciudad con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check that ID matches\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.expect(data.id).to.eql(pm.collectionVariables.get(\"ciudad1_id\"));",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const paises = ['Argentina', 'Ecuador', 'Paraguay'];",
+							"const paisIndex = Math.floor(Math.random() * paises.length);",
+							"pm.collectionVariables.set(\"ciudad1_pais\", paises[paisIndex]);",
+							"pm.collectionVariables.set('ciudad1_nombre', pm.variables.replaceIn('{{$randomCity}}'));",
+							"pm.collectionVariables.set('ciudad1_habitantes', Math.floor(Math.random() * 1000000) + 1);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{ciudad1_nombre}}\",\n    \"pais\": \"{{ciudad1_pais}}\",\n    \"habitantes\": {{ciudad1_habitantes}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar una ciudad con un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"La ciudad con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{ciudad1_nombre}}\",\n    \"pais\": \"{{ciudad1_pais}}\",\n    \"habitantes\": {{ciudad1_habitantes}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar una ciudad por su ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"   pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar una ciudad con un ID que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"La ciudad con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
