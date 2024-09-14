@@ -6,6 +6,7 @@ import { CiudadModule } from './ciudad/ciudad.module';
 import { CiudadEntity } from './ciudad/ciudad.entity';
 import { SupermercadoModule } from './supermercado/supermercado.module';
 import { SupermercadoEntity } from './supermercado/supermercado.entity';
+import { CiudadSupermercadoModule } from './ciudad-supermercado/ciudad-supermercado.module';
 
 function databaseConfigFromEnv(): TypeOrmModuleOptions {
   const url = new URL(process.env.DATABASE_URL);
@@ -39,6 +40,7 @@ function databaseConfigFromEnv(): TypeOrmModuleOptions {
     }),
     CiudadModule,
     SupermercadoModule,
+    CiudadSupermercadoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
