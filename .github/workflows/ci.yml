@@ -18,6 +18,16 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm run test:cov
+    - name: Start API in background
+      run: npm run start &
+      env:
+        DATABASE_URL: sqlite://db.sqlite
+    - name: Wait for API to start
+      run: ./node_modules/.bin/wait-on -t 10s http://localhost:3000/api/v1
+    - name: Run Postman tests
+      run: npm run test:postman
+    - name: Kill API in background
+      run: pkill -f "npm run start"
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
