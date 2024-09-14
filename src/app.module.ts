@@ -5,6 +5,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CiudadModule } from './ciudad/ciudad.module';
 import { CiudadEntity } from './ciudad/ciudad.entity';
 import { SupermercadoModule } from './supermercado/supermercado.module';
+import { SupermercadoEntity } from './supermercado/supermercado.entity';
 
 function databaseConfigFromEnv(): TypeOrmModuleOptions {
   const url = new URL(process.env.DATABASE_URL);
@@ -31,7 +32,7 @@ function databaseConfigFromEnv(): TypeOrmModuleOptions {
   imports: [
     TypeOrmModule.forRoot({
       ...databaseConfigFromEnv(),
-      entities: [CiudadEntity],
+      entities: [CiudadEntity, SupermercadoEntity],
       dropSchema: true,
       synchronize: true,
       keepConnectionAlive: true,
