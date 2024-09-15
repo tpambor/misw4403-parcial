@@ -55,7 +55,7 @@ Antes de iniciar las pruebas de postman, es necesario ejectuar la aplicación.
 Las pruebas de postman se pueden ejecutar importando las colecciones en la carpeta "collections" y definiendo un entorno con la variable `baseURL` con el valor `http://localhost:3000/api/v1`.
 
 ## Opción 2: Con npm
-Las pruebas de postman también se pueden ejectar con el comando:
+Las pruebas de postman también se pueden ejecutar con el comando:
 ```sh
 npm run test:postman
 ```
