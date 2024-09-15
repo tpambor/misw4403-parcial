@@ -1,85 +1,61 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Parcial MISW4403 - Diseño y construcción de APIs
+**Ciclo:** 2024-14  
+**Desarrollado por:** Tim Ulf Pambor  
+**Repositorio**: https://github.com/tpambor/misw4403-parcial  
+**Reporte de sonarqube:** https://sonarcloud.io/summary/overall?id=tpambor_misw4403-parcial  
+**Versión de Node.js utilizada:** v20.17.0  
+**Versión de npm utilizada:** 10.8.2
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Ejectuar la aplicación
+1. Clonar este repositorio
+2. Instalar dependencias con `npm install`
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Opción 1: Docker Compose
+1. Crear el contendor y el entorno con `docker compose build`
+2. Ejecutar el API con `docker compose up`
 
-## Description
+## Opción 2: Local
+Antes de iniciar la aplicación, configura la variable de entorno `DATABASE_URL` con la URL correcta para acceder a la base de datos.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Para PostgreSQL, una URL típica se ve así: `postgres://nest:nestpw@127.0.0.1:5432/nest`. Se puede crear una instancia de PostgreSQL con docker con:
+```
+docker run --rm -it -p 5432:5432 -e POSTGRES_USER=nest -e POSTGRES_PASSWORD=nestpw -e POSTGRES_DB=nest postgres
+```
+- Para SQLite (ideal para desarrollo y pruebas), se puede usar una URL como esta: `sqlite://db.sqlite`
 
-## Project setup
-
-```bash
-$ npm install
+En sistemas Unix se puede configurar la variable de entorno con:
+```sh
+export DATABASE_URL="sqlite://db.sqlite"
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+En sistemas Windows con CMD:
+```sh
+set DATABASE_URL="sqlite://db.sqlite"
+```
+o con Powershell:
+```sh
+$env:DATABASE_URL = 'sqlite://db.sqlite'
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+Una vez configurada la variable de entorno, se puede ejecutar la aplicación utilizando el comando:
+```sh
+npm run start
 ```
 
-## Resources
+# Ejecutar pruebas unitarias
+Las pruebas unitarias se pueden ejecutar con:
+```sh
+npm run test:cov
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+# Ejectuar pruebas de postman
+Antes de iniciar las pruebas de postman, es necesario ejectuar la aplicación. 
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Opción 1: Con Postman UI
+Las pruebas de postman se pueden ejecutar importando las colecciones en la carpeta "collections" y definiendo un entorno con la variable `baseURL` con el valor `http://localhost:3000/api/v1`.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Opción 2: Con npm
+Las pruebas de postman también se pueden ejectar con el comando:
+```sh
+npm run test:postman
+```
