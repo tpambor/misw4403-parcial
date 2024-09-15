@@ -1,0 +1,832 @@
+{
+	"info": {
+		"_postman_id": "70801d6c-f187-4d10-ad42-9e9c93ff5d96",
+		"name": "Ciudad-Supermercado",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26749673"
+	},
+	"item": [
+		{
+			"name": "Crear ciudad 1 (prerrequisito)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"ciudad1_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const paises = ['Argentina', 'Ecuador', 'Paraguay'];",
+							"const paisIndex = Math.floor(Math.random() * paises.length);",
+							"pm.collectionVariables.set(\"ciudad1_pais\", paises[paisIndex]);",
+							"pm.collectionVariables.set('ciudad1_nombre', pm.variables.replaceIn('{{$randomCity}}'));",
+							"pm.collectionVariables.set('ciudad1_habitantes', Math.floor(Math.random() * 1000000) + 1);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{ciudad1_nombre}}\",\n    \"pais\": \"{{ciudad1_pais}}\",\n    \"habitantes\": {{ciudad1_habitantes}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear supermercado 1 (prerrequisito)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"supermercado1_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length < 11);",
+							"pm.collectionVariables.set('supermercado1_nombre', nombre);",
+							"",
+							"pm.collectionVariables.set('supermercado1_longitud', pm.variables.replaceIn('{{$randomLongitude}}'));",
+							"pm.collectionVariables.set('supermercado1_latitud', pm.variables.replaceIn('{{$randomLatitude}}'));",
+							"pm.collectionVariables.set('supermercado1_pagina', pm.variables.replaceIn('{{$randomUrl}}'));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado1_nombre}}\",\n    \"longitud\": {{supermercado1_longitud}},\n    \"latitud\": {{supermercado1_latitud}},\n    \"paginaWeb\": \"{{supermercado1_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear supermercado 2 (prerrequisito)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"supermercado2_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado2_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado2_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado2_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado2_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length < 11);",
+							"pm.collectionVariables.set('supermercado2_nombre', nombre);",
+							"",
+							"pm.collectionVariables.set('supermercado2_longitud', pm.variables.replaceIn('{{$randomLongitude}}'));",
+							"pm.collectionVariables.set('supermercado2_latitud', pm.variables.replaceIn('{{$randomLatitude}}'));",
+							"pm.collectionVariables.set('supermercado2_pagina', pm.variables.replaceIn('{{$randomUrl}}'));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado2_nombre}}\",\n    \"longitud\": {{supermercado2_longitud}},\n    \"latitud\": {{supermercado2_latitud}},\n    \"paginaWeb\": \"{{supermercado2_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear supermercado 3 (prerrequisito)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Should have a string as id\", function () {",
+							"    pm.expect(data.id).to.be.a(\"string\");",
+							"    pm.collectionVariables.set(\"supermercado3_id\", data.id);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado3_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado3_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado3_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado3_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let nombre;",
+							"",
+							"do {",
+							"    nombre = pm.variables.replaceIn('{{$randomCompanyName}}');",
+							"} while(nombre.length < 11);",
+							"pm.collectionVariables.set('supermercado3_nombre', nombre);",
+							"",
+							"pm.collectionVariables.set('supermercado3_longitud', pm.variables.replaceIn('{{$randomLongitude}}'));",
+							"pm.collectionVariables.set('supermercado3_latitud', pm.variables.replaceIn('{{$randomLatitude}}'));",
+							"pm.collectionVariables.set('supermercado3_pagina', pm.variables.replaceIn('{{$randomUrl}}'));",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"{{supermercado3_nombre}}\",\n    \"longitud\": {{supermercado3_longitud}},\n    \"latitud\": {{supermercado3_latitud}},\n    \"paginaWeb\": \"{{supermercado3_pagina}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Asociar un nuevo supermercado a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"ID of city should match\", function () {",
+							"    pm.expect(data.id).to.eql(pm.collectionVariables.get(\"ciudad1_id\"));",
+							"});",
+							"",
+							"pm.test(\"Name of city should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country of city should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants of city should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							"",
+							"pm.test('Number of supermarkets > 0', function () {",
+							"   pm.expect(data.supermercados.length).to.greaterThan(0)",
+							"});",
+							"",
+							"pm.test(\"Check that it contains the created supermarket\", function () {",
+							"    var found = false; ",
+							"",
+							"    for (var i = 0; i < data.supermercados.length; i++) {",
+							"        if (data.supermercados[i].id === pm.collectionVariables.get(\"supermercado1_id\")) {",
+							"            found = true;",
+							"            break;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(found).to.be.true;",
+							"    pm.expect(data.supermercados[i].nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"    pm.expect(data.supermercados[i].longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"    pm.expect(data.supermercados[i].latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"    pm.expect(data.supermercados[i].paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/{{supermercado1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"{{supermercado1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Asociar un supermercado que no existe a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado con el id dado no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todos los supermercados que pertenecen a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Number of supermarkets > 0', function () {",
+							"   pm.expect(data.length).to.greaterThan(0)",
+							"});",
+							"",
+							"pm.test(\"Check that it contains the created supermarket\", function () {",
+							"    var found = false; ",
+							"",
+							"    for (var i = 0; i < data.length; i++) {",
+							"        if (data[i].id === pm.collectionVariables.get(\"supermercado1_id\")) {",
+							"            found = true;",
+							"            break;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(found).to.be.true;",
+							"    pm.expect(data[i].nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"    pm.expect(data[i].longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"    pm.expect(data[i].latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"    pm.expect(data[i].paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un supermercado asociado a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Name should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"supermercado1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Longitude should match\", function () {",
+							"    pm.expect(data.longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_longitud\")));",
+							"});",
+							"",
+							"pm.test(\"Latitude should match\", function () {",
+							"    pm.expect(data.latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado1_latitud\")));",
+							"});",
+							"",
+							"pm.test(\"Web page should match\", function () {",
+							"    pm.expect(data.paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado1_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/{{supermercado1_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"{{supermercado1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un supermercado que no está asociado a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado no pertenece a la ciudad con el id dado.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/{{supermercado2_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"{{supermercado2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar los supermercados que están asociados a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"ID of city should match\", function () {",
+							"    pm.expect(data.id).to.eql(pm.collectionVariables.get(\"ciudad1_id\"));",
+							"});",
+							"",
+							"pm.test(\"Name of city should match\", function () {",
+							"    pm.expect(data.nombre).to.eql(pm.collectionVariables.get(\"ciudad1_nombre\"));",
+							"});",
+							"",
+							"pm.test(\"Country of city should match\", function () {",
+							"    pm.expect(data.pais).to.eql(pm.collectionVariables.get(\"ciudad1_pais\"));",
+							"});",
+							"",
+							"pm.test(\"Inhabitants of city should match\", function () {",
+							"    pm.expect(data.habitantes).to.eql(pm.collectionVariables.get(\"ciudad1_habitantes\"));",
+							"});",
+							"",
+							"pm.test('Number of supermarkets is 1', function () {",
+							"   pm.expect(data.supermercados.length).to.eql(1)",
+							"});",
+							"",
+							"pm.test(\"Check that it contains the created supermarket\", function () {",
+							"    var found = false; ",
+							"",
+							"    for (var i = 0; i < data.supermercados.length; i++) {",
+							"        if (data.supermercados[i].id === pm.collectionVariables.get(\"supermercado2_id\")) {",
+							"            found = true;",
+							"            break;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(found).to.be.true;",
+							"    pm.expect(data.supermercados[i].nombre).to.eql(pm.collectionVariables.get(\"supermercado2_nombre\"));",
+							"    pm.expect(data.supermercados[i].longitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado2_longitud\")));",
+							"    pm.expect(data.supermercados[i].latitud).to.eql(parseFloat(pm.collectionVariables.get(\"supermercado2_latitud\")));",
+							"    pm.expect(data.supermercados[i].paginaWeb).to.eql(pm.collectionVariables.get(\"supermercado2_pagina\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{supermercado2_id}}\",\n        \"nombre\": \"{{supermercado2_nombre}}\",\n        \"longitud\": {{supermercado2_longitud}},\n        \"latitud\": {{supermercado2_latitud}},\n        \"paginaWeb\": \"{{supermercado2_pagina}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar los supermercados asociados a una ciudad, con un supermercado inexistente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado con el id 00000000-0000-0000-0000-000000000000 no existe.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"00000000-0000-0000-0000-000000000000\",\n        \"nombre\": \"{{supermercado1_nombre}}\",\n        \"longitud\": {{supermercado1_longitud}},\n        \"latitud\": {{supermercado1_latitud}},\n        \"paginaWeb\": \"{{supermercado1_pagina}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un supermercado asociado a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"   pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/{{supermercado2_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"{{supermercado2_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un supermercado que no estaba previamente asociado a una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"",
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   pm.expect(data.message).to.eql(\"El supermercado no pertenece a la ciudad con el id dado.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/cities/{{ciudad1_id}}/supermarkets/{{supermercado3_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cities",
+						"{{ciudad1_id}}",
+						"supermarkets",
+						"{{supermercado3_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
